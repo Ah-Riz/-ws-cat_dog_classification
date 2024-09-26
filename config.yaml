@@ -1,0 +1,13 @@
+model_version: "v1.0.0"
+choose_arch: "MobileNetV2"
+arch:
+  - name: "MobileNetV2"
+    params:
+      input_shape: 3
+      hidden_units: 10
+      output_shape: 2
+  - name: "VGG16"
+    params:
+      input_shape: 3
+      hidden_units: 10
+      output_shape: 2

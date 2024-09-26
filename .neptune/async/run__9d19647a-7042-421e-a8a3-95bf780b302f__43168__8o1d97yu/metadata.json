@@ -1,0 +1,10 @@
+{
+  "mode": "async",
+  "containerId": "9d19647a-7042-421e-a8a3-95bf780b302f",
+  "containerType": "run",
+  "structureVersion": 3,
+  "os": "macOS-10.16-x86_64-i386-64bit",
+  "pythonVersion": "3.9.12 (main, Apr  5 2022, 01:53:17) \n[Clang 12.0.0 ]",
+  "neptuneClientVersion": "1.11.1",
+  "createdAt": "2024-09-26T04:10:54.923883+00:00"
+}
