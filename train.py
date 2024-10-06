@@ -5,7 +5,7 @@ from tqdm.auto import tqdm
 from timeit import default_timer as timer
 from architecture import *
 import yaml
-from utils import convert_params
+from utils import *
 
 from dotenv import load_dotenv
 import neptune
@@ -71,7 +71,7 @@ def train(model: torch.nn.Module,
           test_dataloader: torch.utils.data.DataLoader, 
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
-          epochs: int = 10,
+          epochs: int = 1,
           device: str = "cpu"):
     best_accuracy = 0
     results = {"train_loss": [], "train_acc": [], "test_loss": [], "test_acc": []}
@@ -87,7 +87,7 @@ def train(model: torch.nn.Module,
                                         device=device)
         print(f"Epoch: {epoch+1} | Train loss: {train_loss:.4f} | Train acc: {train_acc:.4f} | Test loss: {test_loss:.4f} | Test acc: {test_acc:.4f}")
         
-        model_name = "best_model.pt"
+        model_name = "asset/best_model.pt"
         if test_acc > best_accuracy:
             best_accuracy = test_acc
             torch.save(model.state_dict(), model_name)
@@ -98,7 +98,8 @@ def train(model: torch.nn.Module,
         results["test_acc"].append(test_acc.item() if isinstance(test_acc, torch.Tensor) else test_acc)
     
     print(f"Best test accuracy: {best_accuracy:.4f}")
-    
+     
+     
     return results, model_name
 
 def main():
@@ -119,14 +120,12 @@ def main():
     
     train_loader, val_loader = data_prep("./data/PetImages")
     torch.manual_seed(42)
-    # print(config["arch"][config["choose_arch"]]["params"]["input_shape"])
-    # print(config["arch"][[[config["choose_arch"]]]])
+    
     choosen_arch = config["choose_arch"]
     method = [x for x in config["arch"] if x["name"] == choosen_arch][0]
     arch_name = method["name"]
     model_arch_version = config["model_version"]
     model_config = convert_params(method["params"])
-    # model = model_arch[config["choose_arch"]]()
     model_namespace = f"models/{arch_name}/{model_arch_version}"
     
     modelClass = model_arch[arch_name]
@@ -137,11 +136,11 @@ def main():
         run[f"{model_namespace}/params/{param_name}"] = param_value
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    NUM_EPOCHS = 10
+    NUM_EPOCHS = config["config"]["epochs"]
     model.to(device)
-    
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+    loss_fn = get_loss_fn(config["config"]["loss_fn"])
+    optimizer = get_optimizer(config["config"]["optimizer"])(model.parameters(), lr=config["config"]["lr"])
     
     start_time = timer()
     results, model_name = train(model=model,

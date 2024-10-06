@@ -11,3 +11,8 @@ arch:
       input_shape: 3
       hidden_units: 10
       output_shape: 2
+config:
+  optimizer: "Adam"
+  loss_fn: "CrossEntropyLoss"
+  epochs: 1
+  lr: 0.001

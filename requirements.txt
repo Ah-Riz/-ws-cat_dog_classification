@@ -1,0 +1,10 @@
+fastapi==0.115.0
+numpy==1.21.5
+torch==2.2.2
+torchvision==0.17.2
+Pillow==9.0.1
+uvicorn==0.31.0
+PyYAML==6.0.2
+tqdm==4.66.5
+python-dotenv==1.0.1
+python-multipart==0.0.12
